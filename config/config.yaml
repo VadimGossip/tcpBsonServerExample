@@ -2,7 +2,3 @@ serverListener:
   tcp:
     host: "127.0.0.1"
     port: 8081
-
-requestGenerator:
-    routePerSec: 100
-    workTimeSec: 5

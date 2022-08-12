@@ -9,14 +9,8 @@ type NetServerConfig struct {
 	Port int
 }
 
-type RGeneratorConfig struct {
-	RoutePerSec int
-	WorkTimeSec int
-}
-
 type Config struct {
 	ServerListenerTcp NetServerConfig
-	RGenerator        RGeneratorConfig
 }
 
 func parseConfigFile(configDir string) error {
@@ -31,9 +25,6 @@ func parseConfigFile(configDir string) error {
 
 func unmarshal(cfg *Config) error {
 	if err := viper.UnmarshalKey("serverListener.tcp", &cfg.ServerListenerTcp); err != nil {
-		return err
-	}
-	if err := viper.UnmarshalKey("requestGenerator", &cfg.RGenerator); err != nil {
 		return err
 	}
 	return nil
