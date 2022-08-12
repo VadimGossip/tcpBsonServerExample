@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/VadimGossip/tcpBsonServerExample/internal/domain"
 	"github.com/VadimGossip/tcpConHandler"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"net"
 	"time"
@@ -59,11 +60,10 @@ func (h *Handler) handleRequest() {
 	}
 }
 
-func (h *Handler) HandleConnection(conn net.Conn) error {
+func (h *Handler) HandleConnection(conn net.Conn) {
 	h.connectionHandler = tcpConHandler.NewConnectionHandler(conn, 2*time.Second, h.handleRequest, 100, 100)
 	err := h.connectionHandler.HandleConnection()
 	if err != nil {
-		return err
+		logrus.Errorf("Error while handle connection %s", err)
 	}
-	return nil
 }
