@@ -1,13 +1,13 @@
 package app
 
 import (
+	"github.com/VadimGossip/tcpBsonServerExample/internal/config"
+	server "github.com/VadimGossip/tcpBsonServerExample/internal/server/tcp"
+	"github.com/VadimGossip/tcpBsonServerExample/internal/transport/tcp"
 	"github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"syscall"
-	"tpcClientServerStand/config"
-	server "tpcClientServerStand/internal/server/tcp"
-	"tpcClientServerStand/internal/transport/tcp"
 )
 
 func Run(configDir string) {
