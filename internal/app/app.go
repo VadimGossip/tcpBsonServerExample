@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/VadimGossip/tcpBsonServerExample/internal/config"
-	server "github.com/VadimGossip/tcpBsonServerExample/internal/server/tcp"
+	"github.com/VadimGossip/tcpBsonServerExample/internal/server/tcp"
 	"github.com/VadimGossip/tcpBsonServerExample/internal/transport/tcp"
 	"github.com/sirupsen/logrus"
 	"os"
@@ -15,10 +15,10 @@ func Run(configDir string) {
 	if err != nil {
 		logrus.Errorf("Config initialization error %s", err)
 	}
-	handler := tcp.NewHandler()
-	srv := server.NewServer(cfg.ServerListenerTcp)
+	hlr := handler.NewHandler()
+	srv := tcp.NewServer(cfg.ServerListenerTcp)
 	go func() {
-		if err := srv.Run(handler); err != nil {
+		if err := srv.Run(hlr); err != nil {
 			logrus.Fatalf("error occured while running tcp server: %s", err.Error())
 		}
 	}()
