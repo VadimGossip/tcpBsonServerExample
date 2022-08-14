@@ -3,19 +3,23 @@ package handler
 import (
 	"fmt"
 	"github.com/VadimGossip/tcpBsonServerExample/internal/domain"
-	"github.com/VadimGossip/tcpConHandler"
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"net"
 	"time"
 )
 
 type Handler struct {
-	connectionHandler *tcpConHandler.ConnectionHandler
+	connectionHandler ConnectionHandler
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+type ConnectionHandler interface {
+	HandleConnection(conn net.Conn, handlerFunc func(conn net.Conn))
+	ReadChan() []byte
+	WriteChan(conn net.Conn, msgBody []byte)
+}
+
+func NewHandler(connectionHandler ConnectionHandler) *Handler {
+	return &Handler{connectionHandler: connectionHandler}
 }
 
 func (h *Handler) routeRequest(req domain.RouteRequest) domain.RouteResponse {
@@ -34,7 +38,7 @@ func (h *Handler) routeRequest(req domain.RouteRequest) domain.RouteResponse {
 	return res
 }
 
-func (h *Handler) handleRequest() {
+func (h *Handler) handleRequest(conn net.Conn) {
 	for {
 		msgBody := h.connectionHandler.ReadChan()
 		var req domain.RouteRequest
@@ -56,14 +60,10 @@ func (h *Handler) handleRequest() {
 				responseBytes, _ = bson.Marshal(domain.RouteResponse{Err: fmt.Sprintf("error occurred while marshal response from router: %s", err.Error())})
 			}
 		}
-		h.connectionHandler.WriteChan(responseBytes)
+		h.connectionHandler.WriteChan(conn, responseBytes)
 	}
 }
 
 func (h *Handler) HandleConnection(conn net.Conn) {
-	h.connectionHandler = tcpConHandler.NewConnectionHandler(conn, 2*time.Second, h.handleRequest, 100, 100)
-	err := h.connectionHandler.HandleConnection()
-	if err != nil {
-		logrus.Errorf("Error while handle connection %s", err)
-	}
+	h.connectionHandler.HandleConnection(conn, h.handleRequest)
 }

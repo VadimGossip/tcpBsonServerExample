@@ -3,7 +3,7 @@ module github.com/VadimGossip/tcpBsonServerExample
 go 1.19
 
 require (
-	github.com/VadimGossip/tcpConHandler v1.0.0
+	github.com/VadimGossip/tcpConHandler v1.0.3
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.12.0
 	go.mongodb.org/mongo-driver v1.10.1

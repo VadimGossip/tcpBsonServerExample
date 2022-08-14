@@ -4,10 +4,12 @@ import (
 	"github.com/VadimGossip/tcpBsonServerExample/internal/config"
 	"github.com/VadimGossip/tcpBsonServerExample/internal/server/tcp"
 	"github.com/VadimGossip/tcpBsonServerExample/internal/transport/tcp"
+	"github.com/VadimGossip/tcpConHandler"
 	"github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func Run(configDir string) {
@@ -15,7 +17,8 @@ func Run(configDir string) {
 	if err != nil {
 		logrus.Errorf("Config initialization error %s", err)
 	}
-	hlr := handler.NewHandler()
+	ch := tcpConHandler.NewConnectionHandler(100, 100, time.Second*2)
+	hlr := handler.NewHandler(ch)
 	srv := tcp.NewServer(cfg.ServerListenerTcp)
 	go func() {
 		if err := srv.Run(hlr); err != nil {
